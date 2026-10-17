@@ -423,7 +423,10 @@
   });
 
   // 分享链接可直接出卦：index.html#auto
-  if (location.hash === '#auto') setTimeout(run, 30);
+  if (location.hash === '#auto' || location.hash === '#card') {
+    setTimeout(run, 30);
+    if (location.hash === '#card') setTimeout(() => { if (current) $('cardBtn').click(); }, 1500);
+  }
 })();
 </script>
 </body>
