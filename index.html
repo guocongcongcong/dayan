@@ -104,7 +104,8 @@
   .meta{font-size:12px;color:var(--dim);text-align:center;margin-bottom:18px;letter-spacing:.08em;line-height:1.9}
   .meta em{font-style:normal;color:var(--accent)}
 
-  .acts{display:flex;gap:9px}
+  .acts{display:flex;flex-wrap:wrap;gap:9px}
+  .acts .btn{flex:1 1 46%;min-width:0}
   .btn{
     flex:1;height:42px;border-radius:9px;border:1px solid var(--line);
     background:#1b1814;color:#b9b1a2;font-size:13px;letter-spacing:.1em;cursor:pointer;
@@ -132,6 +133,16 @@
   .mode-sw{display:inline-flex;border:1px solid #2a2419;border-radius:6px;overflow:hidden;margin-top:9px}
   .mode-sw button{background:none;border:0;color:#5c554a;font-size:10.5px;padding:4px 11px;cursor:pointer;letter-spacing:.1em}
   .mode-sw button.on{background:#251f15;color:var(--gold)}
+
+  .sheet{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;
+         padding:22px;background:rgba(8,7,6,.93);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  .sheet.on{display:flex;animation:fade .25s ease both}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .sheet-in{width:100%;max-width:400px;text-align:center}
+  .sheet img{width:100%;display:block;border-radius:10px;border:1px solid #2a2620;
+             box-shadow:0 28px 70px -24px #000}
+  .sheet-acts{display:flex;gap:9px;margin-top:16px}
+  .sheet-acts .btn{flex:1;height:44px}
 
   .toast{
     position:fixed;left:50%;bottom:34px;transform:translate(-50%,14px);
@@ -177,8 +188,9 @@
 
     <div class="acts">
       <button class="btn primary" id="againBtn">再摇一次</button>
+      <button class="btn primary" id="cardBtn">生成卡片</button>
       <button class="btn" id="detailBtn">十八变明细</button>
-      <button class="btn" id="copyBtn">复制</button>
+      <button class="btn" id="copyBtn">复制文本</button>
     </div>
 
     <div class="detail" id="detail">
@@ -199,10 +211,22 @@
   </div>
 </div>
 
+<div class="sheet" id="sheet">
+  <div class="sheet-in">
+    <img id="cardImg" alt="卦象卡片">
+    <div class="sheet-acts">
+      <button class="btn primary" id="saveBtn">保存图片</button>
+      <button class="btn" id="shareBtn">分享</button>
+      <button class="btn" id="closeBtn">关闭</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast">已复制</div>
 
 <script src="data/hexagrams.js"></script>
 <script src="lib/engine.js"></script>
+<script src="lib/card.js"></script>
 <script>
 (function () {
   const $ = id => document.getElementById(id);
@@ -350,6 +374,45 @@
       document.body.removeChild(ta);
     }
   };
+
+  /* ── 分享卡片 ── */
+  let cardBlob = null, cardUrl = null;
+
+  $('cardBtn').onclick = () => {
+    if (!current) return;
+    const cv = document.createElement('canvas');
+    DayanCard.render(cv, current);
+    cv.toBlob(blob => {
+      cardBlob = blob;
+      if (cardUrl) URL.revokeObjectURL(cardUrl);
+      cardUrl = URL.createObjectURL(blob);
+      $('cardImg').src = cardUrl;
+      $('sheet').classList.add('on');
+    }, 'image/png');
+  };
+
+  $('saveBtn').onclick = () => {
+    if (!cardUrl) return;
+    const a = document.createElement('a');
+    a.href = cardUrl;
+    a.download = '大衍-' + new Date().toISOString().slice(0, 10) + '.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  $('shareBtn').onclick = () => {
+    if (!cardBlob) return;
+    const file = new File([cardBlob], 'dayan.png', { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({ files: [file], title: '大衍' }).catch(() => {});
+    } else {
+      $('saveBtn').onclick();
+    }
+  };
+
+  $('closeBtn').onclick = () => $('sheet').classList.remove('on');
+  $('sheet').onclick = e => { if (e.target === $('sheet')) $('sheet').classList.remove('on'); };
 
   document.querySelectorAll('.mode-sw button').forEach(b => {
     b.onclick = () => {
