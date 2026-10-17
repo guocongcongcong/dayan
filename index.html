@@ -11,145 +11,215 @@
 <meta property="og:type" content="website">
 <style>
   :root{
-    --bg:#100f0d; --panel:#191713; --line:#2a2620;
-    --text:#e9e3d6; --dim:#8d8578; --gold:#c8a25c; --accent:#e0a24a;
+    --ink:#0b0a08; --ink2:#14110e; --panel:#1a1611;
+    --text:#ece5d6; --dim:#8a8275; --dimmer:#5f584c;
+    --gold:#d9b877; --gold2:#a8823f; --accent:#e0a24a;
+    --line:rgba(200,162,92,.16); --line2:rgba(200,162,92,.28);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;min-height:100%}
   body{
-    background:radial-gradient(120% 80% at 50% -10%, #23201a 0%, var(--bg) 55%);
+    background:
+      radial-gradient(130% 75% at 50% -12%, #272119 0%, #15120e 42%, var(--ink) 100%),
+      var(--ink);
     color:var(--text);
     font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
     display:flex;justify-content:center;
-    padding:34px 18px 48px;
+    padding:36px 18px 52px;
+    -webkit-font-smoothing:antialiased;
   }
-  .app{width:100%;max-width:470px}
+  /* 纸纹 */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.045;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .app{width:100%;max-width:472px;position:relative;z-index:1}
 
   /* ── 头部 ── */
-  .brand{text-align:center;margin-bottom:34px}
+  .brand{text-align:center;margin-bottom:12px}
   .brand h1{
     font-family:"Songti SC","Noto Serif SC",serif;
-    font-size:30px;font-weight:600;letter-spacing:.42em;
-    margin:0 0 12px;padding-left:.42em;color:var(--gold);
+    font-size:38px;font-weight:600;letter-spacing:.46em;
+    margin:0 0 14px;padding-left:.46em;
+    background:linear-gradient(175deg,#f6e3b8 0%,var(--gold) 46%,#8d6a2c 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 2px 14px rgba(200,162,92,.22));
   }
-  .brand p{margin:0;font-size:12.5px;color:var(--dim);letter-spacing:.16em}
+  .brand .rule{
+    width:92px;height:1px;margin:0 auto 15px;
+    background:linear-gradient(90deg,transparent,var(--gold2) 22%,var(--gold) 50%,var(--gold2) 78%,transparent);
+    opacity:.75;
+  }
+  .brand p{margin:0;font-size:11.5px;color:var(--dim);letter-spacing:.2em}
 
   /* ── 起卦按钮 ── */
-  .stage{min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-  .cast-btn{
-    position:relative;width:168px;height:168px;border-radius:50%;
-    background:radial-gradient(circle at 50% 38%, #2b2519 0%, #17140f 70%);
-    border:1px solid #3d3527;color:var(--gold);
-    font-family:"Songti SC","Noto Serif SC",serif;
-    font-size:23px;letter-spacing:.3em;padding-left:.3em;cursor:pointer;
-    box-shadow:0 0 0 1px #000 inset,0 18px 44px -22px #000,0 0 46px -22px var(--gold);
-    transition:transform .18s ease,border-color .25s ease,box-shadow .35s ease;
+  .stage{min-height:238px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-top:22px}
+  .cast-wrap{position:relative;width:186px;height:186px;display:grid;place-items:center}
+
+  /* 旋转的金弧 */
+  .cast-wrap::before,.cast-wrap::after{
+    content:"";position:absolute;border-radius:50%;pointer-events:none;
   }
-  .cast-btn::after{
-    content:"";position:absolute;inset:-9px;border-radius:50%;
-    border:1px solid #2c261b;
+  .cast-wrap::before{
+    inset:-3px;
+    background:conic-gradient(from 0deg,transparent 0 52%,rgba(217,184,119,.0) 58%,rgba(217,184,119,.85) 74%,rgba(217,184,119,0) 88%);
+    -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 2px));
+            mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 2px));
+    animation:spin 9s linear infinite;
+  }
+  .cast-wrap::after{
+    inset:-18px;border:1px solid rgba(200,162,92,.12);
+  }
+  .cast-btn:hover ~ .glow,.cast-wrap:hover::before{animation-duration:2.6s}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .cast-btn{
+    position:relative;z-index:2;width:168px;height:168px;border-radius:50%;
+    background:
+      radial-gradient(circle at 50% 34%, #2e2719 0%, #1b1710 52%, #100d0a 100%);
+    border:1px solid rgba(200,162,92,.34);
+    color:var(--gold);
+    font-family:"Songti SC","Noto Serif SC",serif;
+    font-size:24px;letter-spacing:.34em;padding-left:.34em;cursor:pointer;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,.6) inset,
+      0 0 40px -16px rgba(217,184,119,.5),
+      0 26px 50px -30px #000;
+    transition:transform .2s cubic-bezier(.2,.7,.3,1),box-shadow .4s ease,border-color .3s;
   }
   .cast-btn:active{transform:scale(.965)}
-  .cast-btn:hover{border-color:var(--gold);box-shadow:0 0 0 1px #000 inset,0 18px 44px -22px #000,0 0 60px -14px var(--gold)}
-  .cast-btn[disabled]{opacity:.85;cursor:default}
+  .cast-btn:hover{
+    border-color:rgba(217,184,119,.7);
+    box-shadow:0 0 0 1px rgba(0,0,0,.6) inset,0 0 64px -12px rgba(217,184,119,.6),0 26px 50px -30px #000;
+  }
+  .cast-btn[disabled]{opacity:.8;cursor:default}
 
-  .hint{margin-top:22px;font-size:11.5px;color:#5f594e;letter-spacing:.18em}
+  .hint{margin-top:26px;font-size:11px;color:var(--dimmer);letter-spacing:.26em}
+  .hint b{color:var(--gold2);font-weight:400}
 
   /* ── 推演中 ── */
   .running{text-align:center}
   .running .tick{
     font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-    font-size:13px;color:var(--gold);letter-spacing:.22em;min-height:20px;
+    font-size:13px;color:var(--gold);letter-spacing:.24em;min-height:20px;
+    text-shadow:0 0 18px rgba(217,184,119,.45);
   }
-  .running .bar{width:132px;height:2px;background:#241f18;margin:16px auto 0;overflow:hidden;border-radius:2px}
-  .running .bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .06s linear}
+  .running .bar{width:150px;height:1.5px;background:rgba(200,162,92,.14);margin:18px auto 0;overflow:hidden;border-radius:2px}
+  .running .bar i{display:block;height:100%;width:0;
+    background:linear-gradient(90deg,var(--gold2),var(--gold));
+    box-shadow:0 0 10px rgba(217,184,119,.6);transition:width .06s linear}
 
   /* ── 结果 ── */
-  .result{display:none;width:100%;animation:rise .5s ease both}
+  .result{display:none;width:100%;animation:rise .55s cubic-bezier(.2,.7,.3,1) both}
   .result.on{display:block}
-  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
-  .pair{display:flex;align-items:stretch;gap:10px;margin-bottom:22px}
+  .pair{display:flex;align-items:stretch;gap:9px;margin-bottom:20px}
   .hex{
-    flex:1;background:var(--panel);border:1px solid var(--line);
-    border-radius:12px;padding:14px 12px 13px;text-align:center;min-width:0;
+    flex:1;min-width:0;text-align:center;padding:16px 10px 15px;
+    border-radius:15px;position:relative;
+    background:linear-gradient(180deg,rgba(30,25,19,.95),rgba(17,14,11,.95));
+    border:1px solid var(--line);
+    box-shadow:0 22px 46px -32px #000, inset 0 1px 0 rgba(255,246,225,.05);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   }
-  .hex .cap{font-size:10.5px;color:var(--dim);letter-spacing:.24em;margin-bottom:11px}
-  .hex .glyph{font-size:26px;line-height:1;color:var(--gold);margin-bottom:9px}
-  .hex .nm{font-family:"Songti SC","Noto Serif SC",serif;font-size:17px;letter-spacing:.1em;white-space:nowrap}
-  .hex.ghost .glyph{opacity:.78}
-  .hex.ghost .nm{color:#cbc3b2}
-  .arrow{display:flex;align-items:center;color:#4a4438;font-size:15px;padding:0 1px}
+  .hex::after{
+    content:"";position:absolute;left:16%;right:16%;top:0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(217,184,119,.5),transparent);
+  }
+  .hex .cap{font-size:10px;color:var(--dimmer);letter-spacing:.28em;margin-bottom:13px}
+  .hex .glyph{
+    font-size:30px;line-height:1;margin-bottom:11px;
+    color:var(--gold);
+    text-shadow:0 0 26px rgba(217,184,119,.32);
+  }
+  .hex .nm{font-family:"Songti SC","Noto Serif SC",serif;font-size:17.5px;letter-spacing:.14em;white-space:nowrap}
+  .hex.ghost .glyph{opacity:.72;text-shadow:none}
+  .hex.ghost .nm{color:#cfc7b6}
+  .arrow{display:flex;align-items:center;color:#4b4336;font-size:14px}
 
   /* 六爻图 */
-  .draw{margin:12px auto 0;display:flex;flex-direction:column;gap:5px;width:100%;max-width:108px}
-  .row{display:flex;align-items:center;gap:5px;height:7px}
-  .bar{height:7px;border-radius:1px;background:#cfc4ab;flex:1}
+  .draw{margin:14px auto 0;display:flex;flex-direction:column;gap:5px;width:100%;max-width:106px}
+  .row{display:flex;align-items:center;gap:5px;height:7px;
+       animation:lineIn .5s cubic-bezier(.2,.7,.3,1) both;
+       animation-delay:calc(var(--i,0) * 58ms)}
+  @keyframes lineIn{from{opacity:0;transform:translateY(7px) scaleX(.86)}to{opacity:1;transform:none}}
+  .bar{height:7px;border-radius:1.5px;background:linear-gradient(180deg,#ded3b8,#b6a98b);flex:1}
   .bar.break{background:none;display:flex;gap:9px}
-  .bar.break span{flex:1;height:7px;border-radius:1px;background:#cfc4ab}
-  .row.mv .bar,.row.mv .bar.break span{background:var(--accent);box-shadow:0 0 10px -2px var(--accent)}
+  .bar.break span{flex:1;height:7px;border-radius:1.5px;background:linear-gradient(180deg,#ded3b8,#b6a98b)}
+  .row.mv .bar,.row.mv .bar.break span{
+    background:linear-gradient(180deg,#f2c483,var(--accent));
+    box-shadow:0 0 12px -1px rgba(224,162,74,.7);
+  }
   .mk{width:8px;font-size:9px;color:var(--accent);text-align:center;flex:none}
 
   /* 数字条 */
-  .nums{display:flex;justify-content:space-between;gap:4px;margin:0 0 20px;
-        background:#141210;border:1px solid var(--line);border-radius:10px;padding:11px 12px}
-  .num{flex:1;text-align:center;min-width:0}
-  .num b{display:block;font-family:ui-monospace,Menlo,monospace;font-size:16px;font-weight:600;line-height:1.35}
-  .num i{display:block;font-style:normal;font-size:9.5px;color:#6b6458;margin-top:3px;letter-spacing:.1em}
-  .num.y b{color:#d8c69a}
-  .num.yin b{color:#9c9484}
-  .num.mv b{color:var(--accent)}
+  .nums{display:flex;justify-content:space-between;gap:4px;margin:0 0 18px;padding:13px 12px;
+        border-radius:13px;border:1px solid var(--line);
+        background:linear-gradient(180deg,rgba(18,15,12,.92),rgba(12,10,8,.92))}
+  .num{flex:1;text-align:center;min-width:0;animation:rise .5s ease both;animation-delay:calc(.3s + var(--i,0) * 34ms)}
+  .num b{display:block;font-family:ui-monospace,Menlo,monospace;font-size:18px;font-weight:600;line-height:1.3}
+  .num i{display:block;font-style:normal;font-size:9.5px;color:var(--dimmer);margin-top:4px;letter-spacing:.14em}
+  .num.y b{color:#dcc9a0}
+  .num.yin b{color:#9d9483}
+  .num.mv b{color:var(--accent);text-shadow:0 0 14px rgba(224,162,74,.45)}
   .num.mv i{color:#8a6a34}
 
-  .meta{font-size:12px;color:var(--dim);text-align:center;margin-bottom:18px;letter-spacing:.08em;line-height:1.9}
+  .meta{font-size:12px;color:var(--dim);text-align:center;margin-bottom:18px;letter-spacing:.08em;line-height:1.95}
   .meta em{font-style:normal;color:var(--accent)}
 
   .acts{display:flex;flex-wrap:wrap;gap:9px}
   .acts .btn{flex:1 1 46%;min-width:0}
   .btn{
-    flex:1;height:42px;border-radius:9px;border:1px solid var(--line);
-    background:#1b1814;color:#b9b1a2;font-size:13px;letter-spacing:.1em;cursor:pointer;
-    transition:border-color .2s,color .2s;
+    height:44px;border-radius:10px;cursor:pointer;font-size:13px;letter-spacing:.12em;
+    border:1px solid rgba(200,162,92,.16);
+    background:linear-gradient(180deg,#1e1a14,#151210);
+    color:#b9b1a2;transition:all .22s;
   }
-  .btn:hover{border-color:#453d2e;color:var(--text)}
-  .btn.primary{background:linear-gradient(180deg,#241f16,#1a1712);border-color:#4a3f2a;color:var(--gold)}
+  .btn:hover{border-color:rgba(200,162,92,.4);color:var(--text)}
+  .btn.primary{
+    background:linear-gradient(180deg,#2c2418,#1b1611);
+    border-color:rgba(217,184,119,.42);color:var(--gold);
+    box-shadow:0 0 24px -14px rgba(217,184,119,.7), inset 0 1px 0 rgba(255,240,210,.06);
+  }
+  .btn.primary:hover{border-color:rgba(217,184,119,.7);box-shadow:0 0 30px -10px rgba(217,184,119,.85)}
 
   /* 十八变明细 */
-  .detail{display:none;margin-top:18px;background:#141210;border:1px solid var(--line);
-          border-radius:10px;padding:14px;font-size:12px}
-  .detail.on{display:block}
-  .detail h4{margin:0 0 11px;font-size:11px;font-weight:500;color:var(--dim);letter-spacing:.2em}
-  .dl{display:grid;grid-template-columns:46px 1fr auto auto;gap:8px 8px;
+  .detail{display:none;margin-top:18px;padding:16px;border-radius:13px;
+          border:1px solid var(--line);background:rgba(10,9,7,.7)}
+  .detail.on{display:block;animation:rise .35s ease both}
+  .detail h4{margin:0 0 12px;font-size:10.5px;font-weight:500;color:var(--dim);letter-spacing:.26em}
+  .dl{display:grid;grid-template-columns:44px 1fr auto auto;gap:9px 8px;
       font-family:ui-monospace,Menlo,monospace;font-size:12px;align-items:center}
-  .dl .k{color:#6b6458;font-size:11px}
-  .dl .c{color:#b6ad9c;letter-spacing:.1em}
+  .dl .k{color:var(--dimmer);font-size:11px}
+  .dl .c{color:#b8af9c;letter-spacing:.12em}
   .dl .r{color:#7d7568;font-size:11px}
   .dl .v{color:var(--gold);text-align:right}
   .dl .v.mv{color:var(--accent)}
-  .note{margin:12px 0 0;font-size:10.5px;color:#5a5449;line-height:1.75}
+  .note{margin:13px 0 0;font-size:10.5px;color:#544e43;line-height:1.9}
 
-  /* 页脚模式开关 */
-  .foot{margin-top:30px;text-align:center;font-size:10.5px;color:#4e4840;letter-spacing:.12em}
-  .mode-sw{display:inline-flex;border:1px solid #2a2419;border-radius:6px;overflow:hidden;margin-top:9px}
-  .mode-sw button{background:none;border:0;color:#5c554a;font-size:10.5px;padding:4px 11px;cursor:pointer;letter-spacing:.1em}
-  .mode-sw button.on{background:#251f15;color:var(--gold)}
+  /* 页脚 */
+  .foot{margin-top:34px;text-align:center;font-size:10.5px;color:#463f36;letter-spacing:.14em}
+  .mode-sw{display:inline-flex;border:1px solid rgba(200,162,92,.14);border-radius:8px;overflow:hidden;margin-top:10px}
+  .mode-sw button{background:none;border:0;color:#5c554a;font-size:10.5px;padding:5px 13px;cursor:pointer;
+                  letter-spacing:.12em;transition:all .2s}
+  .mode-sw button.on{background:rgba(200,162,92,.11);color:var(--gold)}
 
+  /* 卡片浮层 */
   .sheet{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;
-         padding:22px;background:rgba(8,7,6,.93);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-  .sheet.on{display:flex;animation:fade .25s ease both}
+         padding:22px;background:rgba(6,5,4,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  .sheet.on{display:flex;animation:fade .28s ease both}
   @keyframes fade{from{opacity:0}to{opacity:1}}
   .sheet-in{width:100%;max-width:400px;text-align:center}
-  .sheet img{width:100%;display:block;border-radius:10px;border:1px solid #2a2620;
-             box-shadow:0 28px 70px -24px #000}
+  .sheet img{width:100%;display:block;border-radius:12px;border:1px solid var(--line2);
+             box-shadow:0 34px 80px -30px #000,0 0 60px -30px rgba(217,184,119,.5)}
   .sheet-acts{display:flex;gap:9px;margin-top:16px}
-  .sheet-acts .btn{flex:1;height:44px}
+  .sheet-acts .btn{flex:1;height:46px}
 
-  .toast{
-    position:fixed;left:50%;bottom:34px;transform:translate(-50%,14px);
-    background:#2a2419;color:var(--gold);font-size:12px;letter-spacing:.1em;
-    padding:9px 18px;border-radius:20px;border:1px solid #463a26;
-    opacity:0;pointer-events:none;transition:all .3s ease;
-  }
+  .toast{position:fixed;left:50%;bottom:36px;transform:translate(-50%,14px);
+    background:#2a2419;color:var(--gold);font-size:12px;letter-spacing:.12em;
+    padding:10px 20px;border-radius:22px;border:1px solid rgba(200,162,92,.35);
+    opacity:0;pointer-events:none;transition:all .32s cubic-bezier(.2,.7,.3,1);z-index:60}
   .toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
@@ -158,12 +228,13 @@
 
   <div class="brand">
     <h1>大衍</h1>
+    <div class="rule"></div>
     <p>大衍之数五十 · 其用四十有九 · 十八变而成卦</p>
   </div>
 
   <div class="stage" id="stage">
-    <button class="cast-btn" id="castBtn">摇卦</button>
-    <div class="hint">分二 · 挂一 · 揲四 · 归奇</div>
+    <div class="cast-wrap"><button class="cast-btn" id="castBtn">摇卦</button></div>
+    <div class="hint"><b>分二</b> · <b>挂一</b> · <b>揲四</b> · <b>归奇</b></div>
   </div>
 
   <div class="result" id="result">
@@ -240,12 +311,22 @@
   let mode = 'true';
   let current = null;
 
+  const IDLE =
+    '<div class="cast-wrap"><button class="cast-btn" id="castBtn">摇卦</button></div>' +
+    '<div class="hint"><b>分二</b> · <b>挂一</b> · <b>揲四</b> · <b>归奇</b></div>';
+
+  function showIdle() {
+    $('stage').innerHTML = IDLE;
+    $('castBtn').onclick = run;
+  }
+
   /* 画六爻：上爻在最上，初爻在最下 */
   function draw(el, binary, lines) {
     el.innerHTML = '';
     for (let i = 5; i >= 0; i--) {
       const row = document.createElement('div');
       row.className = 'row' + (isMoving(lines[i]) ? ' mv' : '');
+      row.style.setProperty('--i', i);          // 初爻先落，上爻后落
       const bar = document.createElement('div');
       bar.className = 'bar' + (binary[i] ? '' : ' break');
       if (!binary[i]) bar.innerHTML = '<span></span><span></span>';
@@ -273,6 +354,7 @@
     r.lines.forEach((v, i) => {
       const d = document.createElement('div');
       d.className = 'num ' + (isMoving(v) ? 'mv' : (isYang(v) ? 'y' : 'yin'));
+      d.style.setProperty('--i', i);
       d.innerHTML = '<b>' + v + '</b><i>' + POS[i] + '</i>';
       nums.appendChild(d);
     });
@@ -318,10 +400,7 @@
       if (p) p.style.width = (Math.min(n, 18) / 18 * 100) + '%';
       if (n >= 18) {
         clearInterval(timer);
-        $('stage').innerHTML =
-          '<button class="cast-btn" id="castBtn">摇卦</button>' +
-          '<div class="hint">分二 · 挂一 · 揲四 · 归奇</div>';
-        $('castBtn').onclick = run;
+        showIdle();
         render(r);
         $('result').classList.add('on');
       }
@@ -333,10 +412,7 @@
   $('againBtn').onclick = () => {
     $('result').classList.remove('on');
     $('detail').classList.remove('on');
-    $('stage').innerHTML =
-      '<button class="cast-btn" id="castBtn">摇卦</button>' +
-      '<div class="hint">分二 · 挂一 · 揲四 · 归奇</div>';
-    $('castBtn').onclick = run;
+    showIdle();
   };
 
   $('detailBtn').onclick = () => $('detail').classList.toggle('on');
