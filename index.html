@@ -200,6 +200,10 @@
 
   /* 页脚 */
   .foot{margin-top:34px;text-align:center;font-size:10.5px;color:#463f36;letter-spacing:.14em}
+  .navlink{display:inline-block;margin-top:16px;font-size:11px;letter-spacing:.2em;text-decoration:none;
+           color:#6b6458;border-bottom:1px solid rgba(200,162,92,.18);padding-bottom:3px;
+           transition:color .22s,border-color .22s}
+  .navlink:hover{color:var(--gold);border-color:rgba(200,162,92,.5)}
   .mode-sw{display:inline-flex;border:1px solid rgba(200,162,92,.14);border-radius:8px;overflow:hidden;margin-top:10px}
   .mode-sw button{background:none;border:0;color:#5c554a;font-size:10.5px;padding:5px 13px;cursor:pointer;
                   letter-spacing:.12em;transition:all .2s}
@@ -279,6 +283,7 @@
       <button data-mode="true" class="on">保真推演</button>
       <button data-mode="classic">经典概率</button>
     </div>
+    <a class="navlink" href="divination.html">解 卦 →</a>
   </div>
 </div>
 
