@@ -124,6 +124,9 @@
   .hex.ghost .glyph{opacity:.72;text-shadow:none}
   .hex.ghost .nm{color:#cfc7b6}
   .arrow{display:flex;align-items:center;color:#4b4336;font-size:14px}
+  .sem{text-align:center;font-size:10.5px;color:var(--dimmer);letter-spacing:.22em;
+       margin:-8px 0 18px;line-height:1.7}
+  .sem b{color:var(--gold2);font-weight:400}
 
   .draw{margin:14px auto 0;display:flex;flex-direction:column;gap:5px;width:100%;max-width:106px}
   .row{display:flex;align-items:center;gap:5px;height:7px;
@@ -207,6 +210,7 @@
   .res.on{display:block}
   .head{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:8px}
   .hx{text-align:center;min-width:96px}
+  .hcap{font-size:10px;color:var(--dimmer);letter-spacing:.24em;margin-bottom:8px}
   .hx .g{font-family:"Songti SC",serif;font-size:34px;color:var(--gold);line-height:1;
     text-shadow:0 0 26px rgba(217,184,119,.3)}
   .hx .n{font-family:"Songti SC","Noto Serif SC",serif;font-size:17px;margin-top:7px;white-space:nowrap;letter-spacing:.1em}
@@ -341,6 +345,8 @@
           <div class="draw" id="cDraw"></div>
         </div>
       </div>
+
+      <div class="sem" id="sem"></div>
 
       <div class="nums" id="nums"></div>
       <div class="meta" id="meta"></div>
@@ -495,6 +501,10 @@
       ? '动爻：' + mv.map(i => posOf(i) + '爻').join('、') + '　<em>' +
         mv.map(i => MARK[r.lines[i - 1]] + ' ' + LABEL[r.lines[i - 1]]).join('　') + '</em>'
       : '静卦 · 六爻皆不动';
+
+    $('sem').innerHTML = r.moving.length
+      ? '本 卦 为 当 下　→　变 卦 为 走 向'
+      : '六 爻 不 动 · 只 看 本 卦';
 
     const dl = $('dl');
     dl.innerHTML = '';
@@ -654,9 +664,10 @@
     let html = '';
 
     html += '<div class="head">' +
-      '<div class="hx"><div class="g">' + P.symbol + '</div><div class="n">' + P.name + '</div></div>' +
-      (r.moving.length ? '<div class="arw">→</div><div class="hx ghost"><div class="g">' + Ch.symbol +
-        '</div><div class="n">' + Ch.name + '</div></div>' : '') + '</div>';
+      '<div class="hx"><div class="hcap">本 卦 · 当 下</div><div class="g">' + P.symbol +
+        '</div><div class="n">' + P.name + '</div></div>' +
+      (r.moving.length ? '<div class="arw">→</div><div class="hx ghost"><div class="hcap">变 卦 · 走 向</div>' +
+        '<div class="g">' + Ch.symbol + '</div><div class="n">' + Ch.name + '</div></div>' : '') + '</div>';
     html += '<div class="mvline">' + posTxt + '</div>';
 
     html += '<div class="sec"><h3>判 辞 依 据</h3><div class="reason">' + d.note + '</div></div>';
