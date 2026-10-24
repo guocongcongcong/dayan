@@ -3,40 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>大衍 · 十八变而成卦</title>
-<meta name="description" content="大衍筮法电子起卦：分二、挂一、揲四、归奇，逐变真推演十八变而定卦。">
-<meta name="theme-color" content="#100f0d">
-<meta property="og:title" content="大衍 · 十八变而成卦">
-<meta property="og:description" content="分二、挂一、揲四、归奇 —— 逐变真推演十八变。">
+<title>大衍 · 摇卦与解卦</title>
+<meta name="description" content="大衍筮法：逐变真推演十八变而成卦，按朱熹七条取辞，检索高岛易断原文。">
+<meta name="theme-color" content="#0b0a08">
+<meta property="og:title" content="大衍 · 摇卦与解卦">
+<meta property="og:description" content="分二、挂一、揲四、归奇 —— 摇一卦，接着解。">
 <meta property="og:type" content="website">
 <style>
   :root{
-    --ink:#0b0a08; --ink2:#14110e; --panel:#1a1611;
-    --text:#ece5d6; --dim:#8a8275; --dimmer:#5f584c;
+    --ink:#0b0a08; --text:#ece5d6; --dim:#8a8275; --dimmer:#5f584c;
     --gold:#d9b877; --gold2:#a8823f; --accent:#e0a24a;
     --line:rgba(200,162,92,.16); --line2:rgba(200,162,92,.28);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;min-height:100%}
   body{
-    background:
-      radial-gradient(130% 75% at 50% -12%, #272119 0%, #15120e 42%, var(--ink) 100%),
-      var(--ink);
+    background:radial-gradient(130% 75% at 50% -12%,#272119 0%,#15120e 42%,var(--ink) 100%),var(--ink);
     color:var(--text);
     font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-    display:flex;justify-content:center;
-    padding:36px 18px 52px;
-    -webkit-font-smoothing:antialiased;
+    display:flex;justify-content:center;padding:36px 18px 54px;-webkit-font-smoothing:antialiased;
   }
-  /* 纸纹 */
   body::before{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.045;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
-  .app{width:100%;max-width:472px;position:relative;z-index:1}
+  .app{width:100%;max-width:540px;position:relative;z-index:1}
 
   /* ── 头部 ── */
-  .brand{text-align:center;margin-bottom:12px}
+  .brand{text-align:center;margin-bottom:10px}
   .brand h1{
     font-family:"Songti SC","Noto Serif SC",serif;
     font-size:38px;font-weight:600;letter-spacing:.46em;
@@ -50,113 +44,101 @@
     background:linear-gradient(90deg,transparent,var(--gold2) 22%,var(--gold) 50%,var(--gold2) 78%,transparent);
     opacity:.75;
   }
-  .brand p{margin:0;font-size:11.5px;color:var(--dim);letter-spacing:.2em}
+  .brand p{margin:0;font-size:11px;color:var(--dim);letter-spacing:.2em}
 
-  /* ── 起卦按钮 ── */
-  .stage{min-height:238px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-top:22px}
-  .cast-wrap{position:relative;width:186px;height:186px;display:grid;place-items:center}
-
-  /* 旋转的金弧 */
-  .cast-wrap::before,.cast-wrap::after{
-    content:"";position:absolute;border-radius:50%;pointer-events:none;
+  /* ── 标签页 ── */
+  .tabs{display:flex;justify-content:center;margin:26px 0 24px}
+  .tab{
+    position:relative;background:none;border:0;cursor:pointer;
+    font-family:"Songti SC","Noto Serif SC",serif;
+    font-size:14.5px;letter-spacing:.32em;padding:9px 26px 12px;
+    color:#6b6458;transition:color .25s;
   }
+  .tab:hover{color:#b9b1a2}
+  .tab.on{color:var(--gold)}
+  .tab.on::after{
+    content:"";position:absolute;left:26px;right:26px;bottom:0;height:1px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    box-shadow:0 0 14px rgba(217,184,119,.55);
+  }
+  .tab + .tab::before{
+    content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+    width:1px;height:12px;background:rgba(200,162,92,.18);
+  }
+
+  .view{display:none}
+  .view.on{display:block;animation:rise .45s cubic-bezier(.2,.7,.3,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  /* ── 摇卦 ── */
+  .stage{min-height:232px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-top:6px}
+  .cast-wrap{position:relative;width:186px;height:186px;display:grid;place-items:center}
+  .cast-wrap::before,.cast-wrap::after{content:"";position:absolute;border-radius:50%;pointer-events:none}
   .cast-wrap::before{
     inset:-3px;
-    background:conic-gradient(from 0deg,transparent 0 52%,rgba(217,184,119,.0) 58%,rgba(217,184,119,.85) 74%,rgba(217,184,119,0) 88%);
+    background:conic-gradient(from 0deg,transparent 0 52%,rgba(217,184,119,0) 58%,rgba(217,184,119,.85) 74%,rgba(217,184,119,0) 88%);
     -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 2px));
             mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 2px));
     animation:spin 9s linear infinite;
   }
-  .cast-wrap::after{
-    inset:-18px;border:1px solid rgba(200,162,92,.12);
-  }
-  .cast-btn:hover ~ .glow,.cast-wrap:hover::before{animation-duration:2.6s}
+  .cast-wrap::after{inset:-18px;border:1px solid rgba(200,162,92,.12)}
+  .cast-wrap:hover::before{animation-duration:2.6s}
   @keyframes spin{to{transform:rotate(360deg)}}
-
   .cast-btn{
     position:relative;z-index:2;width:168px;height:168px;border-radius:50%;
-    background:
-      radial-gradient(circle at 50% 34%, #2e2719 0%, #1b1710 52%, #100d0a 100%);
-    border:1px solid rgba(200,162,92,.34);
-    color:var(--gold);
+    background:radial-gradient(circle at 50% 34%,#2e2719 0%,#1b1710 52%,#100d0a 100%);
+    border:1px solid rgba(200,162,92,.34);color:var(--gold);
     font-family:"Songti SC","Noto Serif SC",serif;
     font-size:24px;letter-spacing:.34em;padding-left:.34em;cursor:pointer;
-    box-shadow:
-      0 0 0 1px rgba(0,0,0,.6) inset,
-      0 0 40px -16px rgba(217,184,119,.5),
-      0 26px 50px -30px #000;
+    box-shadow:0 0 0 1px rgba(0,0,0,.6) inset,0 0 40px -16px rgba(217,184,119,.5),0 26px 50px -30px #000;
     transition:transform .2s cubic-bezier(.2,.7,.3,1),box-shadow .4s ease,border-color .3s;
   }
   .cast-btn:active{transform:scale(.965)}
-  .cast-btn:hover{
-    border-color:rgba(217,184,119,.7);
-    box-shadow:0 0 0 1px rgba(0,0,0,.6) inset,0 0 64px -12px rgba(217,184,119,.6),0 26px 50px -30px #000;
-  }
+  .cast-btn:hover{border-color:rgba(217,184,119,.7);
+    box-shadow:0 0 0 1px rgba(0,0,0,.6) inset,0 0 64px -12px rgba(217,184,119,.6),0 26px 50px -30px #000}
   .cast-btn[disabled]{opacity:.8;cursor:default}
-
-  .hint{margin-top:26px;font-size:11px;color:var(--dimmer);letter-spacing:.26em}
+  .hint{margin-top:24px;font-size:11px;color:var(--dimmer);letter-spacing:.26em}
   .hint b{color:var(--gold2);font-weight:400}
 
-  /* ── 推演中 ── */
   .running{text-align:center}
-  .running .tick{
-    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-    font-size:13px;color:var(--gold);letter-spacing:.24em;min-height:20px;
-    text-shadow:0 0 18px rgba(217,184,119,.45);
-  }
+  .running .tick{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--gold);
+    letter-spacing:.24em;min-height:20px;text-shadow:0 0 18px rgba(217,184,119,.45)}
   .running .bar{width:150px;height:1.5px;background:rgba(200,162,92,.14);margin:18px auto 0;overflow:hidden;border-radius:2px}
-  .running .bar i{display:block;height:100%;width:0;
-    background:linear-gradient(90deg,var(--gold2),var(--gold));
+  .running .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold2),var(--gold));
     box-shadow:0 0 10px rgba(217,184,119,.6);transition:width .06s linear}
 
-  /* ── 结果 ── */
-  .result{display:none;width:100%;animation:rise .55s cubic-bezier(.2,.7,.3,1) both}
+  .result{display:none;width:100%;margin-top:22px;animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
   .result.on{display:block}
-  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
   .pair{display:flex;align-items:stretch;gap:9px;margin-bottom:20px}
-  .hex{
-    flex:1;min-width:0;text-align:center;padding:16px 10px 15px;
-    border-radius:15px;position:relative;
+  .hex{flex:1;min-width:0;text-align:center;padding:16px 10px 15px;border-radius:15px;position:relative;
     background:linear-gradient(180deg,rgba(30,25,19,.95),rgba(17,14,11,.95));
     border:1px solid var(--line);
-    box-shadow:0 22px 46px -32px #000, inset 0 1px 0 rgba(255,246,225,.05);
-    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  }
-  .hex::after{
-    content:"";position:absolute;left:16%;right:16%;top:0;height:1px;
-    background:linear-gradient(90deg,transparent,rgba(217,184,119,.5),transparent);
-  }
+    box-shadow:0 22px 46px -32px #000,inset 0 1px 0 rgba(255,246,225,.05);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .hex::after{content:"";position:absolute;left:16%;right:16%;top:0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(217,184,119,.5),transparent)}
   .hex .cap{font-size:10px;color:var(--dimmer);letter-spacing:.28em;margin-bottom:13px}
-  .hex .glyph{
-    font-size:30px;line-height:1;margin-bottom:11px;
-    color:var(--gold);
-    text-shadow:0 0 26px rgba(217,184,119,.32);
-  }
+  .hex .glyph{font-size:30px;line-height:1;margin-bottom:11px;color:var(--gold);text-shadow:0 0 26px rgba(217,184,119,.32)}
   .hex .nm{font-family:"Songti SC","Noto Serif SC",serif;font-size:17.5px;letter-spacing:.14em;white-space:nowrap}
   .hex.ghost .glyph{opacity:.72;text-shadow:none}
   .hex.ghost .nm{color:#cfc7b6}
   .arrow{display:flex;align-items:center;color:#4b4336;font-size:14px}
 
-  /* 六爻图 */
   .draw{margin:14px auto 0;display:flex;flex-direction:column;gap:5px;width:100%;max-width:106px}
   .row{display:flex;align-items:center;gap:5px;height:7px;
-       animation:lineIn .5s cubic-bezier(.2,.7,.3,1) both;
-       animation-delay:calc(var(--i,0) * 58ms)}
+    animation:lineIn .5s cubic-bezier(.2,.7,.3,1) both;animation-delay:calc(var(--i,0) * 58ms)}
   @keyframes lineIn{from{opacity:0;transform:translateY(7px) scaleX(.86)}to{opacity:1;transform:none}}
   .bar{height:7px;border-radius:1.5px;background:linear-gradient(180deg,#ded3b8,#b6a98b);flex:1}
   .bar.break{background:none;display:flex;gap:9px}
   .bar.break span{flex:1;height:7px;border-radius:1.5px;background:linear-gradient(180deg,#ded3b8,#b6a98b)}
-  .row.mv .bar,.row.mv .bar.break span{
-    background:linear-gradient(180deg,#f2c483,var(--accent));
-    box-shadow:0 0 12px -1px rgba(224,162,74,.7);
-  }
+  .row.mv .bar,.row.mv .bar.break span{background:linear-gradient(180deg,#f2c483,var(--accent));
+    box-shadow:0 0 12px -1px rgba(224,162,74,.7)}
   .mk{width:8px;font-size:9px;color:var(--accent);text-align:center;flex:none}
 
-  /* 数字条 */
   .nums{display:flex;justify-content:space-between;gap:4px;margin:0 0 18px;padding:13px 12px;
-        border-radius:13px;border:1px solid var(--line);
-        background:linear-gradient(180deg,rgba(18,15,12,.92),rgba(12,10,8,.92))}
+    border-radius:13px;border:1px solid var(--line);
+    background:linear-gradient(180deg,rgba(18,15,12,.92),rgba(12,10,8,.92))}
   .num{flex:1;text-align:center;min-width:0;animation:rise .5s ease both;animation-delay:calc(.3s + var(--i,0) * 34ms)}
   .num b{display:block;font-family:ui-monospace,Menlo,monospace;font-size:18px;font-weight:600;line-height:1.3}
   .num i{display:block;font-style:normal;font-size:9.5px;color:var(--dimmer);margin-top:4px;letter-spacing:.14em}
@@ -164,33 +146,25 @@
   .num.yin b{color:#9d9483}
   .num.mv b{color:var(--accent);text-shadow:0 0 14px rgba(224,162,74,.45)}
   .num.mv i{color:#8a6a34}
-
   .meta{font-size:12px;color:var(--dim);text-align:center;margin-bottom:18px;letter-spacing:.08em;line-height:1.95}
   .meta em{font-style:normal;color:var(--accent)}
 
   .acts{display:flex;flex-wrap:wrap;gap:9px}
   .acts .btn{flex:1 1 46%;min-width:0}
-  .btn{
-    height:44px;border-radius:10px;cursor:pointer;font-size:13px;letter-spacing:.12em;
-    border:1px solid rgba(200,162,92,.16);
-    background:linear-gradient(180deg,#1e1a14,#151210);
-    color:#b9b1a2;transition:all .22s;
-  }
+  .btn{height:44px;border-radius:10px;cursor:pointer;font-size:13px;letter-spacing:.12em;
+    border:1px solid rgba(200,162,92,.16);background:linear-gradient(180deg,#1e1a14,#151210);
+    color:#b9b1a2;transition:all .22s;font-family:inherit}
   .btn:hover{border-color:rgba(200,162,92,.4);color:var(--text)}
-  .btn.primary{
-    background:linear-gradient(180deg,#2c2418,#1b1611);
-    border-color:rgba(217,184,119,.42);color:var(--gold);
-    box-shadow:0 0 24px -14px rgba(217,184,119,.7), inset 0 1px 0 rgba(255,240,210,.06);
-  }
+  .btn.primary{background:linear-gradient(180deg,#2c2418,#1b1611);border-color:rgba(217,184,119,.42);
+    color:var(--gold);box-shadow:0 0 24px -14px rgba(217,184,119,.7),inset 0 1px 0 rgba(255,240,210,.06)}
   .btn.primary:hover{border-color:rgba(217,184,119,.7);box-shadow:0 0 30px -10px rgba(217,184,119,.85)}
 
-  /* 十八变明细 */
-  .detail{display:none;margin-top:18px;padding:16px;border-radius:13px;
-          border:1px solid var(--line);background:rgba(10,9,7,.7)}
+  .detail{display:none;margin-top:18px;padding:16px;border-radius:13px;border:1px solid var(--line);
+    background:rgba(10,9,7,.7)}
   .detail.on{display:block;animation:rise .35s ease both}
   .detail h4{margin:0 0 12px;font-size:10.5px;font-weight:500;color:var(--dim);letter-spacing:.26em}
   .dl{display:grid;grid-template-columns:44px 1fr auto auto;gap:9px 8px;
-      font-family:ui-monospace,Menlo,monospace;font-size:12px;align-items:center}
+    font-family:ui-monospace,Menlo,monospace;font-size:12px;align-items:center}
   .dl .k{color:var(--dimmer);font-size:11px}
   .dl .c{color:#b8af9c;letter-spacing:.12em}
   .dl .r{color:#7d7568;font-size:11px}
@@ -198,25 +172,115 @@
   .dl .v.mv{color:var(--accent)}
   .note{margin:13px 0 0;font-size:10.5px;color:#544e43;line-height:1.9}
 
-  /* 页脚 */
-  .foot{margin-top:34px;text-align:center;font-size:10.5px;color:#463f36;letter-spacing:.14em}
-  .navlink{display:inline-block;margin-top:16px;font-size:11px;letter-spacing:.2em;text-decoration:none;
-           color:#6b6458;border-bottom:1px solid rgba(200,162,92,.18);padding-bottom:3px;
-           transition:color .22s,border-color .22s}
-  .navlink:hover{color:var(--gold);border-color:rgba(200,162,92,.5)}
+  /* ── 解卦：输入 ── */
+  .inbox{background:linear-gradient(180deg,rgba(30,25,19,.95),rgba(17,14,11,.95));
+    border:1px solid var(--line);border-radius:15px;padding:17px 14px 15px;
+    box-shadow:0 22px 46px -34px #000,inset 0 1px 0 rgba(255,246,225,.05);position:relative}
+  .inbox::after{content:"";position:absolute;left:16%;right:16%;top:0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(217,184,119,.45),transparent)}
+  .inrow{display:flex;gap:6px;justify-content:space-between}
+  .incell{flex:1;text-align:center;min-width:0}
+  .incell .cap{font-size:10px;color:var(--dimmer);margin-bottom:8px;letter-spacing:.12em}
+  .incell select{width:100%;height:42px;background:#100e0b;color:var(--gold);border:1px solid rgba(200,162,92,.2);
+    border-radius:8px;font-size:17px;font-family:ui-monospace,Menlo,monospace;text-align:center;text-align-last:center;
+    cursor:pointer;appearance:none;-webkit-appearance:none;transition:border-color .2s}
+  .incell select:focus{outline:none;border-color:var(--gold)}
+  .incell .lbl{font-size:9px;color:#5a5449;margin-top:7px;white-space:nowrap}
+  .inacts{display:flex;gap:9px;margin-top:15px}
+  .inacts .btn{flex:1}
+
+  /* ── 解卦：结果 ── */
+  .res{display:none;margin-top:26px;animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+  .res.on{display:block}
+  .head{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:8px}
+  .hx{text-align:center;min-width:96px}
+  .hx .g{font-family:"Songti SC",serif;font-size:34px;color:var(--gold);line-height:1;
+    text-shadow:0 0 26px rgba(217,184,119,.3)}
+  .hx .n{font-family:"Songti SC","Noto Serif SC",serif;font-size:17px;margin-top:7px;white-space:nowrap;letter-spacing:.1em}
+  .arw{color:#4b4336;font-size:15px}
+  .hx.ghost .n{color:#cfc7b6}
+  .hx.ghost .g{opacity:.72;text-shadow:none}
+  .mvline{text-align:center;font-size:12px;color:var(--dim);margin:14px 0 24px;letter-spacing:.06em}
+  .mvline em{font-style:normal;color:var(--accent)}
+
+  .sec{border-top:1px solid rgba(200,162,92,.1);padding:20px 0 6px}
+  .sec:first-of-type{border-top:0;padding-top:0}
+  .sec h3{margin:0 0 13px;font-size:10.5px;font-weight:500;color:var(--dim);letter-spacing:.28em;
+    display:flex;align-items:center;gap:8px}
+  .sec h3::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--gold2);flex:none}
+
+  .reason{background:rgba(10,9,7,.6);border:1px solid var(--line);border-radius:11px;padding:14px 16px;
+    font-size:13.5px;line-height:1.9;color:#cbc3b2}
+  .reason b{color:var(--accent);font-weight:600}
+
+  .cats{display:flex;flex-wrap:wrap;gap:7px}
+  .cat{padding:9px 15px;border-radius:9px;border:1px solid rgba(200,162,92,.13);background:#181410;
+    color:#b3aa99;font-size:12.5px;cursor:pointer;letter-spacing:.08em;transition:all .18s;font-family:inherit}
+  .cat:hover:not(.off){border-color:rgba(200,162,92,.45);color:var(--text)}
+  .cat.on{background:rgba(200,162,92,.13);border-color:var(--gold);color:var(--gold);
+    box-shadow:0 0 20px -10px rgba(217,184,119,.8)}
+  .cat.off{opacity:.26;cursor:not-allowed;text-decoration:line-through}
+  .cathint{font-size:10.5px;color:#544e43;margin-top:10px;line-height:1.8}
+
+  .quote{background:rgba(10,9,7,.55);border:1px solid var(--line);border-left:2px solid var(--gold);
+    border-radius:0 11px 11px 0;padding:16px 18px;font-size:14.5px;line-height:2.05;color:#e0d8c8}
+  .quote.none{color:#6b6458;border-left-color:#3a3327}
+
+  details{margin-top:11px;border:1px solid var(--line);border-radius:11px;background:rgba(10,9,7,.5);overflow:hidden}
+  details summary{padding:12px 15px;font-size:12px;color:var(--dim);cursor:pointer;letter-spacing:.14em;
+    list-style:none;outline:none;transition:color .2s}
+  details summary:hover{color:#c9c1b1}
+  details summary::-webkit-details-marker{display:none}
+  details summary::before{content:"▸ ";color:#6b6458}
+  details[open] summary::before{content:"▾ "}
+  details .inner{padding:0 16px 16px;font-size:13px;line-height:2.05;color:#c2baa9}
+  details .inner p{margin:.6em 0}
+
+  .canon{display:grid;grid-template-columns:52px 1fr;gap:11px 12px;font-size:13px;line-height:1.95}
+  .canon .lab{color:var(--gold2);font-size:10.5px;letter-spacing:.14em;text-align:right;padding-top:4px}
+  .canon .txt{color:#cfc7b6}
+  .canon .txt.small{color:#a49b8a;font-size:12.5px}
+  .canon .txt b{color:var(--accent);font-weight:500}
+
+  .yao{display:flex;flex-direction:column;gap:6px}
+  .yaorow{display:grid;grid-template-columns:34px 26px 1fr;gap:10px;align-items:center;
+    font-size:12px;padding:7px 11px;border-radius:8px;background:rgba(10,9,7,.45);border:1px solid transparent}
+  .yaorow.mv{border-color:rgba(224,162,74,.3);background:rgba(40,29,14,.45)}
+  .yaorow .p{color:var(--dimmer);font-size:11px}
+  .yaorow .y{font-family:"Songti SC",serif;font-size:14px}
+  .yaorow .y.yang{color:#dcc9a0}
+  .yaorow .y.yin{color:#8f8878}
+  .yaorow .tags{display:flex;gap:6px;flex-wrap:wrap}
+  .tag{font-size:9.5px;padding:2px 7px;border-radius:4px;letter-spacing:.06em;
+    border:1px solid rgba(200,162,92,.16);color:#7d7568}
+  .tag.good{border-color:rgba(217,184,119,.4);color:var(--gold)}
+  .tag.acc{border-color:rgba(224,162,74,.45);color:var(--accent)}
+
+  .bian{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .bcell{text-align:center;padding:13px 6px 12px;border-radius:11px;
+    background:rgba(10,9,7,.5);border:1px solid var(--line)}
+  .bcell .cap{font-size:9.5px;color:var(--dimmer);letter-spacing:.2em;margin-bottom:8px}
+  .bcell .g{font-family:"Songti SC",serif;font-size:24px;color:var(--gold2);line-height:1}
+  .bcell .n{font-family:"Songti SC",serif;font-size:12.5px;color:#c2baa9;margin-top:7px;white-space:nowrap}
+
+  .src{font-size:10.5px;color:#544e43;margin-top:10px;letter-spacing:.06em}
+  .warn{font-size:11px;color:#a8823f;background:rgba(40,29,14,.4);border:1px solid rgba(200,162,92,.2);
+    border-radius:9px;padding:10px 13px;margin-top:11px;line-height:1.75}
+
+  /* ── 页脚 / 浮层 ── */
+  .foot{margin-top:36px;text-align:center;font-size:10.5px;color:#463f36;letter-spacing:.14em;line-height:2}
   .mode-sw{display:inline-flex;border:1px solid rgba(200,162,92,.14);border-radius:8px;overflow:hidden;margin-top:10px}
   .mode-sw button{background:none;border:0;color:#5c554a;font-size:10.5px;padding:5px 13px;cursor:pointer;
-                  letter-spacing:.12em;transition:all .2s}
+    letter-spacing:.12em;transition:all .2s;font-family:inherit}
   .mode-sw button.on{background:rgba(200,162,92,.11);color:var(--gold)}
 
-  /* 卡片浮层 */
   .sheet{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;
-         padding:22px;background:rgba(6,5,4,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+    padding:22px;background:rgba(6,5,4,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
   .sheet.on{display:flex;animation:fade .28s ease both}
   @keyframes fade{from{opacity:0}to{opacity:1}}
   .sheet-in{width:100%;max-width:400px;text-align:center}
   .sheet img{width:100%;display:block;border-radius:12px;border:1px solid var(--line2);
-             box-shadow:0 34px 80px -30px #000,0 0 60px -30px rgba(217,184,119,.5)}
+    box-shadow:0 34px 80px -30px #000,0 0 60px -30px rgba(217,184,119,.5)}
   .sheet-acts{display:flex;gap:9px;margin-top:16px}
   .sheet-acts .btn{flex:1;height:46px}
 
@@ -236,54 +300,76 @@
     <p>大衍之数五十 · 其用四十有九 · 十八变而成卦</p>
   </div>
 
-  <div class="stage" id="stage">
-    <div class="cast-wrap"><button class="cast-btn" id="castBtn">摇卦</button></div>
-    <div class="hint"><b>分二</b> · <b>挂一</b> · <b>揲四</b> · <b>归奇</b></div>
-  </div>
+  <nav class="tabs">
+    <button class="tab on" data-view="cast">摇 卦</button>
+    <button class="tab" data-view="read">解 卦</button>
+  </nav>
 
-  <div class="result" id="result">
-    <div class="pair">
-      <div class="hex">
-        <div class="cap">本 卦</div>
-        <div class="glyph" id="pGlyph">䷀</div>
-        <div class="nm" id="pName">乾为天</div>
-        <div class="draw" id="pDraw"></div>
+  <!-- ══ 摇卦 ══ -->
+  <section class="view on" id="view-cast">
+    <div class="stage" id="stage">
+      <div class="cast-wrap"><button class="cast-btn" id="castBtn">摇卦</button></div>
+      <div class="hint"><b>分二</b> · <b>挂一</b> · <b>揲四</b> · <b>归奇</b></div>
+    </div>
+
+    <div class="result" id="result">
+      <div class="pair">
+        <div class="hex">
+          <div class="cap">本 卦</div>
+          <div class="glyph" id="pGlyph">䷀</div>
+          <div class="nm" id="pName">乾为天</div>
+          <div class="draw" id="pDraw"></div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="hex ghost">
+          <div class="cap" id="cCap">变 卦</div>
+          <div class="glyph" id="cGlyph">䷀</div>
+          <div class="nm" id="cName">乾为天</div>
+          <div class="draw" id="cDraw"></div>
+        </div>
       </div>
-      <div class="arrow">→</div>
-      <div class="hex ghost">
-        <div class="cap" id="cCap">变 卦</div>
-        <div class="glyph" id="cGlyph">䷀</div>
-        <div class="nm" id="cName">乾为天</div>
-        <div class="draw" id="cDraw"></div>
+
+      <div class="nums" id="nums"></div>
+      <div class="meta" id="meta"></div>
+
+      <div class="acts">
+        <button class="btn primary" id="toReadBtn">解 卦</button>
+        <button class="btn primary" id="castCardBtn">生成卡片</button>
+        <button class="btn" id="detailBtn">十八变明细</button>
+        <button class="btn" id="castCopyBtn">复制文本</button>
+      </div>
+
+      <div class="detail" id="detail">
+        <h4>十 八 变 明 细（初爻在下）</h4>
+        <div class="dl" id="dl"></div>
+        <p class="note">
+          一变收 5 或 9，二三变收 4 或 8；三变毕，余 36/32/28/24，除以四得 9/8/7/6。<br>
+          9 老阳、6 老阴为动爻，动则变。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 解卦 ══ -->
+  <section class="view" id="view-read">
+    <div class="inbox">
+      <div class="inrow" id="inrow"></div>
+      <div class="inacts">
+        <button class="btn primary" id="goBtn">成 卦</button>
+        <button class="btn" id="randBtn">随 机</button>
       </div>
     </div>
 
-    <div class="nums" id="nums"></div>
-    <div class="meta" id="meta"></div>
-
-    <div class="acts">
-      <button class="btn primary" id="againBtn">再摇一次</button>
-      <button class="btn primary" id="cardBtn">生成卡片</button>
-      <button class="btn" id="detailBtn">十八变明细</button>
-      <button class="btn" id="copyBtn">复制文本</button>
-    </div>
-
-    <div class="detail" id="detail">
-      <h4>十 八 变 明 细（初爻在下）</h4>
-      <div class="dl" id="dl"></div>
-      <p class="note">
-        一变收 5 或 9，二三变收 4 或 8；三变毕，余 36/32/28/24，除以四得 9/8/7/6。<br>
-        9 老阳、6 老阴为动爻，动则变。
-      </p>
-    </div>
-  </div>
+    <div class="res" id="res"></div>
+  </section>
 
   <div class="foot">
+    取辞依朱熹《易学启蒙》七条 · 断语为高岛易断原文<br>
+    彖传、小象传为《周易》经文，未作改写
     <div class="mode-sw">
       <button data-mode="true" class="on">保真推演</button>
       <button data-mode="classic">经典概率</button>
     </div>
-    <a class="navlink" href="divination.html">解 卦 →</a>
   </div>
 </div>
 
@@ -303,19 +389,39 @@
 <script src="data/hexagrams.js"></script>
 <script src="lib/engine.js"></script>
 <script src="lib/card.js"></script>
+<script src="lib/card2.js"></script>
+<script src="data/iching64.js"></script>
+<script src="data/wenyan.js"></script>
+<script src="data/takashima.js"></script>
 <script>
 (function () {
   const $ = id => document.getElementById(id);
   const POS = ['初', '二', '三', '四', '五', '上'];
-  const posOf = i => POS[i - 1];        // 动爻位置是 1-based（1=初爻）
+  const posOf = i => POS[i - 1];
   const LABEL = { 9: '老阳', 8: '少阴', 7: '少阳', 6: '老阴' };
+  const NAME = { 6: '老阴', 7: '少阳', 8: '少阴', 9: '老阳' };
   const MARK = { 9: '○', 6: '×' };
+  const CATS = ['时运','婚姻','功名','营商','家宅','疾病','失物','讼事','行人','六甲','战征','天时'];
   const isYang = v => v === 9 || v === 7;
   const isMoving = v => v === 6 || v === 9;
 
   let mode = 'true';
-  let current = null;
+  let lastCast = null;      // 最近一次摇卦结果（含十八变）
+  let readState = null;     // 解卦当前状态
+  let cardBlob = null, cardUrl = null;
 
+  /* ══════════ 视图切换 ══════════ */
+  function switchView(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.view === name));
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === 'view-' + name));
+    if (name === 'read') renderRead();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  document.querySelectorAll('.tab').forEach(t => {
+    t.onclick = () => switchView(t.dataset.view);
+  });
+
+  /* ══════════ 摇卦 ══════════ */
   const IDLE =
     '<div class="cast-wrap"><button class="cast-btn" id="castBtn">摇卦</button></div>' +
     '<div class="hint"><b>分二</b> · <b>挂一</b> · <b>揲四</b> · <b>归奇</b></div>';
@@ -325,13 +431,12 @@
     $('castBtn').onclick = run;
   }
 
-  /* 画六爻：上爻在最上，初爻在最下 */
   function draw(el, binary, lines) {
     el.innerHTML = '';
     for (let i = 5; i >= 0; i--) {
       const row = document.createElement('div');
       row.className = 'row' + (isMoving(lines[i]) ? ' mv' : '');
-      row.style.setProperty('--i', i);          // 初爻先落，上爻后落
+      row.style.setProperty('--i', i);
       const bar = document.createElement('div');
       bar.className = 'bar' + (binary[i] ? '' : ' break');
       if (!binary[i]) bar.innerHTML = '<span></span><span></span>';
@@ -344,8 +449,9 @@
     }
   }
 
-  function render(r) {
-    current = r;
+  function renderCast(r) {
+    lastCast = r;
+    setLines(r.lines);
     $('pGlyph').textContent = r.primary.symbol;
     $('pName').textContent = r.primary.name;
     $('cGlyph').textContent = r.changed.symbol;
@@ -385,7 +491,7 @@
 
   function run() {
     const btn = $('castBtn');
-    btn.disabled = true;
+    if (btn) btn.disabled = true;
     $('result').classList.remove('on');
     $('stage').innerHTML =
       '<div class="running">' +
@@ -406,77 +512,356 @@
       if (n >= 18) {
         clearInterval(timer);
         showIdle();
-        render(r);
+        renderCast(r);
         $('result').classList.add('on');
       }
     }, 34);
   }
 
-  $('castBtn').onclick = run;
-
-  $('againBtn').onclick = () => {
-    $('result').classList.remove('on');
-    $('detail').classList.remove('on');
-    showIdle();
-  };
-
   $('detailBtn').onclick = () => $('detail').classList.toggle('on');
+  $('toReadBtn').onclick = () => switchView('read');
 
-  $('copyBtn').onclick = () => {
-    const r = current;
-    const text = [
+  $('castCopyBtn').onclick = () => {
+    const r = lastCast;
+    if (!r) return;
+    copy([
       '大衍筮法 · ' + new Date().toLocaleString('zh-CN'),
       '六爻（初→上）：' + r.lines.join(' '),
       '本卦　' + r.primary.name + ' ' + r.primary.symbol,
       '变卦　' + r.changed.name + ' ' + r.changed.symbol,
       '动爻　' + (r.moving.length ? r.moving.map(i => posOf(i) + '爻').join('、') : '无（静卦）'),
       '十八变：' + r.steps.map(c => c.join('/')).join('  ')
-    ].join('\n');
+    ].join('\n'));
+  };
 
+  /* ══════════ 解卦 ══════════ */
+  const inrow = $('inrow');
+  const sel = [];
+  for (let i = 5; i >= 0; i--) {
+    const cell = document.createElement('div');
+    cell.className = 'incell';
+    cell.innerHTML = '<div class="cap">' + POS[i] + '</div>' +
+      '<select data-i="' + i + '">' + [9,8,7,6].map(v => '<option value="' + v + '">' + v + '</option>').join('') +
+      '</select><div class="lbl" id="lb' + i + '">老阳</div>';
+    inrow.appendChild(cell);
+  }
+  document.querySelectorAll('#inrow select').forEach(s => {
+    s.onchange = () => $('lb' + s.dataset.i).textContent = NAME[+s.value];
+    sel[+s.dataset.i] = s;
+  });
+  function setLines(arr) {
+    arr.forEach((v, i) => {
+      sel[i].value = v;
+      $('lb' + i).textContent = NAME[v];
+    });
+  }
+  setLines([7, 8, 7, 8, 7, 8]);
+
+  function decide(moving) {
+    const n = moving.length;
+    if (n === 0) return { level:'hex', which:'primary', note:'无动爻 → 取本卦卦辞' };
+    if (n === 1) return { level:'line', which:'primary', pos:moving[0], note:'一爻动 → 取本卦该动爻爻辞' };
+    if (n === 2) return { level:'line', which:'primary', pos:moving[1], sub:moving[0],
+                          note:'两爻动 → 取本卦两动爻爻辞，<b>以上爻为主</b>' };
+    if (n === 3) return { level:'hex', which:'both', note:'三爻动 → 本卦卦辞为主、变卦卦辞为辅' };
+    const still = [1,2,3,4,5,6].filter(i => moving.indexOf(i) < 0);
+    if (n === 4) return { level:'line', which:'changed', pos:still[0], sub:still[1],
+                          note:'四爻动 → 取变卦两不变爻爻辞，<b>以下爻为主</b>' };
+    if (n === 5) return { level:'line', which:'changed', pos:still[0], note:'五爻动 → 取变卦那个不变爻的爻辞' };
+    return { level:'hex', which:'changed', note:'六爻动 → 取变卦卦辞（乾坤则用九、用六）' };
+  }
+
+  const hexOf = b => (window.HEXAGRAMS[b.join('')] || {});
+  const nuclear = b => [b[1], b[2], b[3], b[2], b[3], b[4]];
+  const inverse = b => b.slice().reverse();
+  const opposite = b => b.map(x => 1 - x);
+
+  function yaoInfo(binary, lines) {
+    return binary.map((y, i) => {
+      const pos = i + 1, yang = y === 1;
+      const proper = (pos % 2 === 1) ? yang : !yang;
+      const center = (pos === 2 || pos === 5);
+      const opp = 7 - pos;
+      const ying = binary[opp - 1] !== y;
+      return { pos, yang, proper, center, ying, opp, mv: isMoving(lines[i]) };
+    });
+  }
+
+  function para(t) {
+    if (!t) return '<span style="color:#544e43">（无）</span>';
+    return String(t).split(/\n+/).filter(Boolean).map(p => '<p>' + p + '</p>').join('');
+  }
+
+  function renderRead() {
+    const lines = [0,1,2,3,4,5].map(i => +sel[i].value);
+    const r = DayanEngine.read(lines);
+    const d = decide(r.moving);
+    const P = ICHING[r.primary.id], Ch = ICHING[r.changed.id];
+    const TP = TAKASHIMA[r.primary.id], TC = TAKASHIMA[r.changed.id];
+    const W = (window.WENYAN || {})[r.primary.id] || { tuan:'', small:[] };
+    const WC = (window.WENYAN || {})[r.changed.id] || { tuan:'', small:[] };
+
+    const posTxt = r.moving.length
+      ? '动爻　' + r.moving.map(i => POS[i-1] + '爻').join('、') +
+        '　<em>' + r.moving.map(i => (lines[i-1] === 9 ? '○ 老阳' : '× 老阴')).join('　') + '</em>'
+      : '静卦 · 六爻皆不动';
+
+    let mainT, mainPos, subT, subPos;
+    if (d.level === 'line') {
+      mainT = d.which === 'primary' ? TP : TC;
+      mainPos = d.pos;
+      if (d.sub) { subT = mainT; subPos = d.sub; }
+    } else {
+      mainT = d.which === 'changed' ? TC : TP;
+    }
+    readState = { r, d, P, Ch, TP, TC, W, WC, lines, mainT, mainPos };
+
+    const lineData = (mainPos && mainT.lines[String(mainPos)]) || null;
+    const cats = lineData ? Object.keys(lineData.asks) : [];
+    readState.cats = cats;
+    const firstCat = cats.indexOf('时运') >= 0 ? '时运' : (cats[0] || null);
+    readState.cat = firstCat;
+
+    let html = '';
+
+    html += '<div class="head">' +
+      '<div class="hx"><div class="g">' + P.symbol + '</div><div class="n">' + P.name + '</div></div>' +
+      (r.moving.length ? '<div class="arw">→</div><div class="hx ghost"><div class="g">' + Ch.symbol +
+        '</div><div class="n">' + Ch.name + '</div></div>' : '') + '</div>';
+    html += '<div class="mvline">' + posTxt + '</div>';
+
+    html += '<div class="sec"><h3>判 辞 依 据</h3><div class="reason">' + d.note + '</div></div>';
+
+    if (d.level === 'line' && cats.length) {
+      html += '<div class="sec"><h3>你 问 的 是 哪 一 类</h3><div class="cats" id="cats">' +
+        CATS.map(c => '<button class="cat' + (c === firstCat ? ' on' : '') + (cats.indexOf(c) < 0 ? ' off' : '') +
+          '" data-cat="' + c + '"' + (cats.indexOf(c) < 0 ? ' disabled' : '') + '>' + c + '</button>').join('') +
+        '</div><div class="cathint">置灰的类别，说明高岛在这一爻没有对应断语。</div></div>';
+    } else if (d.level === 'line') {
+      html += '<div class="sec"><h3>断 语</h3><div class="warn">高岛原文在这一爻没有分类断语，下面直接给出该爻正文。</div></div>';
+    }
+
+    if (d.level === 'line') {
+      html += '<div class="sec"><h3 id="catTitle">高 岛 断 语</h3><div class="quote" id="mainQuote"></div>' +
+              '<div class="src" id="mainSrc"></div></div>';
+      if (lineData) {
+        html += '<div class="sec"><h3>断 语 全 文</h3><details><summary>展开该爻断曰</summary>' +
+                '<div class="inner">' + para(lineData.duan) + '</div></details></div>';
+      }
+    } else {
+      html += '<div class="sec"><h3>高 岛 总 论</h3><div class="quote">' + para(mainT.general) + '</div></div>';
+      if (d.which === 'both') {
+        html += '<div class="sec"><h3>变 卦 总 论</h3><div class="quote">' + para(TC.general) + '</div></div>';
+      }
+      if (lines.filter(isMoving).length === 6 && (r.primary.id === '11' || r.primary.id === '88')) {
+        const isQian = r.primary.id === '11';
+        html += '<div class="sec"><h3>' + (isQian ? '用 九' : '用 六') + '</h3>' +
+                '<div class="quote">' + (isQian ? '见群龙无首，吉。' : '利永贞。') + '</div>' +
+                '<div class="src">六爻皆动，依朱熹说取用九／用六</div></div>';
+      }
+    }
+
+    let canon = '';
+    if (d.level === 'line') {
+      const hx = d.which === 'primary' ? P : Ch;
+      const wy = d.which === 'primary' ? W : WC;
+      canon += '<div class="lab">爻 辞</div><div class="txt"><b>' + hx.lines[String(d.pos)] + '</b></div>';
+      if (wy.small && wy.small[d.pos - 1]) {
+        canon += '<div class="lab">小 象</div><div class="txt small">《象》曰：' + wy.small[d.pos - 1] + '</div>';
+      }
+    }
+    canon += '<div class="lab">卦 辞</div><div class="txt">' + P.judgement + '</div>';
+    if (W.tuan) canon += '<div class="lab">彖 曰</div><div class="txt small">' + W.tuan + '</div>';
+    canon += '<div class="lab">大 象</div><div class="txt small">' + P.image + '</div>';
+    if (r.moving.length) {
+      canon += '<div class="lab">变 卦</div><div class="txt small">' + Ch.name + '　' + Ch.judgement + '</div>';
+    }
+    html += '<div class="sec"><h3>经 文</h3><div class="canon">' + canon + '</div></div>';
+
+    const yi = yaoInfo(r.primaryBinary, lines);
+    let yr = '';
+    yi.slice().reverse().forEach(y => {
+      const tags = [y.proper ? '<span class="tag good">得位</span>' : '<span class="tag">失位</span>'];
+      if (y.center) tags.push('<span class="tag good">得中</span>');
+      if (y.ying) tags.push('<span class="tag good">应' + POS[y.opp-1] + '</span>');
+      if (y.mv) tags.push('<span class="tag acc">动</span>');
+      yr += '<div class="yaorow' + (y.mv ? ' mv' : '') + '">' +
+            '<div class="p">' + POS[y.pos-1] + '爻</div>' +
+            '<div class="y ' + (y.yang ? 'yang' : 'yin') + '">' + (y.yang ? '—' : '--') + '</div>' +
+            '<div class="tags">' + tags.join('') + '</div></div>';
+    });
+    html += '<div class="sec"><h3>爻 位</h3><div class="yao">' + yr + '</div>' +
+            '<div class="cathint">奇位宜阳、偶位宜阴，合者为得位；二、五为得中；初四、二五、三上阴阳相反为相应。</div></div>';
+
+    const b = r.primaryBinary;
+    const trio = [['互 卦', nuclear(b)], ['综 卦', inverse(b)], ['错 卦', opposite(b)]];
+    html += '<div class="sec"><h3>卦 变</h3><div class="bian">' +
+      trio.map(pair => {
+        const h = hexOf(pair[1]);
+        return '<div class="bcell"><div class="cap">' + pair[0] + '</div><div class="g">' + (h.s || '') +
+               '</div><div class="n">' + (h.n || '—') + '</div></div>';
+      }).join('') +
+      '</div><div class="cathint">互卦看内在结构，综卦看从对面看，错卦看阴阳全反。</div></div>';
+
+    html += '<div class="sec"><h3>参 看</h3><details><summary>次爻 / 本卦总论 / 变卦总论</summary>' +
+            '<div class="inner" id="also"></div></details></div>';
+
+    html += '<div class="sec"><div class="inacts">' +
+            '<button class="btn primary" id="readCardBtn">生成卡片</button>' +
+            '<button class="btn" id="readCopyBtn">复制文本</button></div></div>';
+
+    const el = $('res');
+    el.innerHTML = html;
+    el.classList.add('on');
+
+    el.querySelectorAll('.cat').forEach(bt => {
+      if (bt.disabled) return;
+      bt.onclick = () => {
+        el.querySelectorAll('.cat').forEach(x => x.classList.remove('on'));
+        bt.classList.add('on');
+        readState.cat = bt.dataset.cat;
+        paintMain();
+      };
+    });
+
+    const also = $('also');
+    let ah = '';
+    if (subPos && subT) {
+      const sd = subT.lines[String(subPos)];
+      ah += '<p><b>次爻 ' + POS[subPos-1] + '爻</b></p><p>' + (sd ? sd.duan : '（无）') + '</p>';
+    }
+    ah += '<p><b>本卦总论 · ' + P.name + '</b></p><p>' + TP.general + '</p>';
+    if (r.moving.length) ah += '<p><b>变卦总论 · ' + Ch.name + '</b></p><p>' + TC.general + '</p>';
+    also.innerHTML = ah;
+
+    $('readCardBtn').onclick = openReadCard;
+    $('readCopyBtn').onclick = copyRead;
+
+    paintMain();
+  }
+
+  function paintMain() {
+    const { mainT, mainPos, cat, r, d } = readState;
+    const q = $('mainQuote'), src = $('mainSrc'), title = $('catTitle');
+    if (!q || !mainPos) return;
+    const ld = mainT.lines[String(mainPos)];
+    if (!ld) return;
+    const hxName = d.which === 'primary' ? r.primary.name : r.changed.name;
+    const txt = cat ? ld.asks[cat] : null;
+    if (txt) {
+      q.classList.remove('none');
+      q.textContent = txt;
+      title.textContent = '高 岛 断 语　·　问' + cat;
+    } else {
+      q.classList.add('none');
+      q.textContent = '此爻无分类断语，请看下面的断语全文。';
+      title.textContent = '高 岛 断 语';
+    }
+    src.textContent = hxName + ' · ' + POS[mainPos-1] + '爻';
+  }
+
+  function copyRead() {
+    const { r, d, mainT, mainPos, cat, P, Ch, lines } = readState;
+    const rows = [
+      '大衍解卦 · ' + new Date().toLocaleString('zh-CN'),
+      '六爻（初→上）：' + lines.join(' '),
+      '本卦　' + P.name + ' ' + P.symbol,
+      '变卦　' + Ch.name + ' ' + Ch.symbol,
+      '动爻　' + (r.moving.length ? r.moving.map(i => POS[i-1] + '爻').join('、') : '无（静卦）'),
+      '取辞　' + (d.note || '').replace(/<[^>]+>/g, '')
+    ];
+    if (d.level === 'line') {
+      const ld = mainT.lines[String(mainPos)] || {};
+      const q = cat ? (ld.asks || {})[cat] : null;
+      if (q) rows.push('高岛（问' + cat + '）　' + q);
+    } else {
+      rows.push('卦辞　' + P.judgement);
+    }
+    copy(rows.join('\n'));
+  }
+
+  $('goBtn').onclick = renderRead;
+  $('randBtn').onclick = () => { setLines(DayanEngine.cast(mode).lines); renderRead(); };
+
+  /* ══════════ 复制 ══════════ */
+  function copy(text) {
     const done = () => {
       const el = $('toast');
       el.classList.add('on');
       setTimeout(() => el.classList.remove('on'), 1400);
     };
-    // file:// 下 navigator.clipboard 不可用，退回 execCommand
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(done).catch(fallbackCopy);
-    } else {
-      fallbackCopy();
-    }
-    function fallbackCopy() {
+    const fallback = () => {
       const ta = document.createElement('textarea');
       ta.value = text;
       ta.style.cssText = 'position:fixed;top:-999px;opacity:0';
       document.body.appendChild(ta);
       ta.select();
-      try { document.execCommand('copy'); done(); }
-      catch (e) { alert(text); }
+      try { document.execCommand('copy'); done(); } catch (e) { alert(text); }
       document.body.removeChild(ta);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done).catch(fallback);
+    } else {
+      fallback();
     }
-  };
+  }
 
-  /* ── 分享卡片 ── */
-  let cardBlob = null, cardUrl = null;
-
-  $('cardBtn').onclick = () => {
-    if (!current) return;
+  /* ══════════ 卡片 ══════════ */
+  function openSheet(renderFn, data, name) {
     const cv = document.createElement('canvas');
-    DayanCard.render(cv, current);
+    renderFn(cv, data);
     cv.toBlob(blob => {
-      cardBlob = blob;
       if (cardUrl) URL.revokeObjectURL(cardUrl);
+      cardBlob = blob;
       cardUrl = URL.createObjectURL(blob);
       $('cardImg').src = cardUrl;
+      $('cardImg').dataset.name = name;
       $('sheet').classList.add('on');
     }, 'image/png');
+  }
+
+  $('castCardBtn').onclick = () => {
+    if (!lastCast) return;
+    openSheet(DayanCard.render, lastCast, 'dayan');
   };
+
+  function openReadCard() {
+    const { r, d, mainT, mainPos, cat, P, Ch, W, WC, lines } = readState;
+    const rr = Object.assign({}, r, { lines: lines });
+    let data;
+    if (d.level === 'line') {
+      const hxId = d.which === 'primary' ? r.primary.id : r.changed.id;
+      const wy = d.which === 'primary' ? W : WC;
+      const ld = mainT.lines[String(mainPos)] || {};
+      const q = cat ? (ld.asks || {})[cat] : null;
+      data = {
+        r: rr,
+        catLabel: q ? ('问 ' + cat) : '断 语',
+        quote: q || ld.duan || '',
+        yaoLabel: '爻 辞',
+        yaoText: ICHING[hxId].lines[String(mainPos)],
+        xiangText: (wy.small || [])[mainPos - 1] || '',
+        tuan: wy.tuan || ''
+      };
+    } else {
+      data = {
+        r: rr,
+        catLabel: '卦 辞',
+        quote: P.judgement,
+        yaoLabel: '大 象',
+        yaoText: P.image,
+        tuan: (d.which === 'changed' ? WC : W).tuan || ''
+      };
+    }
+    openSheet(DayanCard2.render, data, 'jie-gua');
+  }
 
   $('saveBtn').onclick = () => {
     if (!cardUrl) return;
     const a = document.createElement('a');
+    const nm = ($('cardImg').dataset.name || 'dayan');
     a.href = cardUrl;
-    a.download = '大衍-' + new Date().toISOString().slice(0, 10) + '.png';
+    a.download = nm + '-' + new Date().toISOString().slice(0, 10) + '.png';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -503,10 +888,20 @@
     };
   });
 
-  // 分享链接可直接出卦：index.html#auto
-  if (location.hash === '#auto' || location.hash === '#card') {
+  /* ══════════ 链接直达 ══════════ */
+  // #auto            摇一卦
+  // #card            摇一卦并出卡片
+  // #read            直接进解卦
+  // #l=8,9,7,9,7,7   按指定六爻解卦
+  const h = location.hash;
+  if (h === '#auto' || h === '#card') {
     setTimeout(run, 30);
-    if (location.hash === '#card') setTimeout(() => { if (current) $('cardBtn').click(); }, 1500);
+    if (h === '#card') setTimeout(() => { if (lastCast) $('castCardBtn').click(); }, 1500);
+  } else if (h === '#read') {
+    setTimeout(() => switchView('read'), 30);
+  } else if (h.indexOf('#l=') === 0) {
+    const arr = h.slice(3).split(',').map(Number).filter(v => v === 6 || v === 7 || v === 8 || v === 9);
+    if (arr.length === 6) setTimeout(() => { setLines(arr); switchView('read'); }, 30);
   }
 })();
 </script>
