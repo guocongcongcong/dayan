@@ -172,6 +172,19 @@
   .dl .v.mv{color:var(--accent)}
   .note{margin:13px 0 0;font-size:10.5px;color:#544e43;line-height:1.9}
 
+  /* ── 解卦：本次所摇摘要 ── */
+  .casted{display:none;align-items:center;justify-content:space-between;gap:12px;
+    padding:12px 15px;margin-bottom:20px;border-radius:12px;
+    background:rgba(10,9,7,.55);border:1px solid var(--line)}
+  .casted.on{display:flex}
+  .casted .cap{font-size:10px;color:var(--dimmer);letter-spacing:.24em}
+  .casted .v{font-family:ui-monospace,Menlo,monospace;font-size:15px;color:var(--gold);
+    letter-spacing:.16em;margin-left:12px}
+  .mini-btn{background:none;border:1px solid rgba(200,162,92,.2);border-radius:7px;color:#8a8275;
+    font-size:10.5px;padding:5px 11px;cursor:pointer;letter-spacing:.1em;font-family:inherit;
+    transition:all .2s;white-space:nowrap}
+  .mini-btn:hover{border-color:rgba(200,162,92,.45);color:var(--gold)}
+
   /* ── 解卦：输入 ── */
   .inbox{background:linear-gradient(180deg,rgba(30,25,19,.95),rgba(17,14,11,.95));
     border:1px solid var(--line);border-radius:15px;padding:17px 14px 15px;
@@ -352,7 +365,12 @@
 
   <!-- ══ 解卦 ══ -->
   <section class="view" id="view-read">
-    <div class="inbox">
+    <div class="casted" id="casted">
+      <div><span class="cap">本 次 所 摇</span><span class="v" id="castedNums"></span></div>
+      <button class="mini-btn" id="manualBtn">手动录入</button>
+    </div>
+
+    <div class="inbox" id="inbox">
       <div class="inrow" id="inrow"></div>
       <div class="inacts">
         <button class="btn primary" id="goBtn">成 卦</button>
@@ -407,6 +425,7 @@
 
   let mode = 'true';
   let lastCast = null;      // 最近一次摇卦结果（含十八变）
+  let manualMode = false;   // 解卦页是否走手动录入
   let readState = null;     // 解卦当前状态
   let cardBlob = null, cardUrl = null;
 
@@ -451,6 +470,7 @@
 
   function renderCast(r) {
     lastCast = r;
+    manualMode = false;
     setLines(r.lines);
     $('pGlyph').textContent = r.primary.symbol;
     $('pName').textContent = r.primary.name;
@@ -597,6 +617,12 @@
 
   function renderRead() {
     const lines = [0,1,2,3,4,5].map(i => +sel[i].value);
+
+    // 若六爻与刚摇出的完全一致，就显示只读摘要，不再摆输入框
+    const linked = !manualMode && lastCast && lines.join('') === lastCast.lines.join('');
+    $('casted').classList.toggle('on', !!linked);
+    $('inbox').style.display = linked ? 'none' : '';
+    if (linked) $('castedNums').textContent = lines.join(' ');
     const r = DayanEngine.read(lines);
     const d = decide(r.moving);
     const P = ICHING[r.primary.id], Ch = ICHING[r.changed.id];
@@ -783,7 +809,8 @@
     copy(rows.join('\n'));
   }
 
-  $('goBtn').onclick = renderRead;
+  $('manualBtn').onclick = () => { manualMode = true; renderRead(); };
+  $('goBtn').onclick = () => { manualMode = true; renderRead(); };
   $('randBtn').onclick = () => { setLines(DayanEngine.cast(mode).lines); renderRead(); };
 
   /* ══════════ 复制 ══════════ */
