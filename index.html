@@ -518,6 +518,9 @@
     }, 34);
   }
 
+  // 首次进入时按钮是静态写在 HTML 里的，必须手动绑一次
+  $('castBtn').onclick = run;
+
   $('detailBtn').onclick = () => $('detail').classList.toggle('on');
   $('toReadBtn').onclick = () => switchView('read');
 
